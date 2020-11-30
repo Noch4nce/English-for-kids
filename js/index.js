@@ -1,15 +1,8 @@
 import '../styles/scss/main.scss';
-import cardData from './cards';
+import cardData from './data/cards';
+import './components/burger-menu';
+import WordCards from './components/word-cards';
+import Game from './components/game';
 
-console.log(cardData);
-document.body.insertAdjacentHTML('beforeend', `<img src="${cardData[8][0].image}">`)
-const ready = (callback) => {
-    if (document.readyState !== 'loading') callback();
-    else document.addEventListener('DOMContentLoaded', callback);
-};
-
-ready(() => {
-    document.querySelector('.first-button').addEventListener('click', () => {
-        document.querySelector('.animated-icon1').classList.toggle('open');
-    });
-});
+const wordCards = new WordCards(cardData);
+const gameMain = new Game(wordCards);
