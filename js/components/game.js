@@ -17,21 +17,20 @@ export default class Game {
         console.log(this.cardData);
         this.wordCardsWrapper = document.querySelector('.word-cards_wrapper');
         this.wordCardsList = document.querySelectorAll('.word-cards_list');
-        this.wordCardsContent = document.querySelector('.word-cards_content');
+        this.wordCardsContent = document.querySelectorAll('.word-cards_content');
         this.wordCardsImage = document.querySelector('.word-cards_image');
 
-        this.wordCardsWrapper.remove();
+        // this.wordCardsWrapper.remove();
     }
 
     createEvent = () => {
-        this.mainCardsLink.forEach((element) => element.addEventListener('click', (event) => this.createWordCards(event)));
+        this.mainCardsLink.forEach((element) => element.addEventListener('click', (event) => this.filterLink(event)));
+        this.wordCardsContent.forEach((element) => element.addEventListener('click', (event) => this.wordCardPlay(event)));
     }
 
-    createWordCards = (event) => {
-        this.mainCardsWrapper.remove();
+    filterLink = (event) => {
         const targetPage = event.target.closest('.main-cards_link');
-        console.log(targetPage.href);
-        // console.log(this.mainCardsLink.getAttribute('href'));
+
         let currentMainCardIndex = 0;
         this.mainCardsState.forEach((item, index) => {
             if (targetPage.getAttribute('href').slice(1) === item) {
@@ -39,27 +38,29 @@ export default class Game {
             }
         });
 
-        console.log(currentMainCardIndex)
-        // for (const el of this.mainCardsState) {
-        //     console.log(el)
-        //     if (event.target.h2 == el) {
-        //     }
-        // }
+        this.shuffleWordCards();
+        this.createWordCards(currentMainCardIndex);
+    }
+
+    createWordCards = (currentMainCardIndex) => {
+        this.mainCardsWrapper.remove();
+
         this.mainWarp.appendChild(this.wordCardsWrapper);
-        // const wci = this.wordCardsList.querySelector('.word-cards_image');
 
         this.wordCardsList.forEach((element, index) => {
             element.querySelector('.word-cards_image').src = `${this.cardData[currentMainCardIndex][index].image}`;
             element.querySelector('.word-cards_name').innerText = `${this.cardData[currentMainCardIndex][index].word}`;
         });
-        // for (let i = 0; i < this.wordCardsList.length; i += 1) {
-        //     this.wordCardsList[i].wci.src = `${this.cardData[1][i].image}`;
-        // }
+    }
 
-        // for (let i = 0; i < this.wordCardsList.length; i += 1) {
-        //     for (let j = 0; j < this.wordCardsList.length; j += 1) {
-        //         this.wordCardsImage.src = `${this.cardData[i + 1][j].image}`;
-        //     }
-        // }
+    shuffleWordCards = () => {
+        this.cardData.forEach((element) => element.sort(() => Math.random() - 0.5));
+    }
+
+    wordCardPlay = (event) => {
+        const targetWordCard = event.target.closest('.word-cards_image');
+        const atr = targetWordCard.getAttribute('src').slice(17, -4);
+
+        new Audio(`../assets/audio/${atr}.mp3`).play();
     }
 }
