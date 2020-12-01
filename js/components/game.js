@@ -19,13 +19,19 @@ export default class Game {
         this.wordCardsList = document.querySelectorAll('.word-cards_list');
         this.wordCardsContent = document.querySelectorAll('.word-cards_content');
         this.wordCardsImage = document.querySelector('.word-cards_image');
+        this.wordCardsRepeat = document.querySelectorAll('.word-cards_repeat');
+        this.wordCardNameTranslate = document.querySelectorAll('.word-cards_name_translate');
 
+        this.navMenuItem = document.querySelectorAll('.nav-link');
         // this.wordCardsWrapper.remove();
     }
 
     createEvent = () => {
         this.mainCardsLink.forEach((element) => element.addEventListener('click', (event) => this.filterLink(event)));
         this.wordCardsContent.forEach((element) => element.addEventListener('click', (event) => this.wordCardPlay(event)));
+        this.wordCardsRepeat.forEach((element) => element.addEventListener('click', (event) => this.createRotateBtn(event)));
+        this.wordCardsContent.forEach((element) => element.addEventListener('mouseleave', (event) => this.createFlipWordCard(event)));
+        this.navMenuItem.forEach((element) => element.addEventListener('click', (event) => this.createNavMenuLink(event)));
     }
 
     filterLink = (event) => {
@@ -50,6 +56,7 @@ export default class Game {
         this.wordCardsList.forEach((element, index) => {
             element.querySelector('.word-cards_image').src = `${this.cardData[currentMainCardIndex][index].image}`;
             element.querySelector('.word-cards_name').innerText = `${this.cardData[currentMainCardIndex][index].word}`;
+            element.querySelector('.word-cards_name_translate').innerText = `${this.cardData[currentMainCardIndex][index].translation}`;
         });
     }
 
@@ -59,8 +66,30 @@ export default class Game {
 
     wordCardPlay = (event) => {
         const targetWordCard = event.target.closest('.word-cards_image');
+        if (targetWordCard === null) return;
         const atr = targetWordCard.getAttribute('src').slice(17, -4);
 
         new Audio(`../assets/audio/${atr}.mp3`).play();
+    }
+
+    createRotateBtn = (event) => {
+        // this.wordCardNameTranslate.style = 'transform: rotateY( 0deg )';
+        // this.wordCardNameTranslate.forEach((el) => {
+        //     el.style = 'transform: rotateY( 0deg )';
+        // });
+        this.rotateWordCard = event.target.closest('.word-cards_content');
+        this.rotateWordCard.querySelector('.word-cards_name').style = 'transform: rotateY( 180deg )';
+        this.rotateWordCard.querySelector('.word-cards_name_translate').style = 'transform: rotateY( 360deg )';
+        this.rotateWordCard.querySelector('.word-cards_repeat').style.display = 'none';
+        this.rotateWordCard.style.transform = 'rotateY(360deg)';
+    }
+
+    createFlipWordCard = (event) => {
+        if (this.rotateWordCard === undefined) return;
+        this.reverseWordCard = event.target.closest('.word-cards_content');
+        this.reverseWordCard.querySelector('.word-cards_name').style = 'transform: rotateY( 360deg )';
+        this.reverseWordCard.querySelector('.word-cards_name_translate').style = 'transform: rotateY( 180deg )';
+        this.reverseWordCard.querySelector('.word-cards_repeat').style.display = 'block';
+        this.rotateWordCard.style.transform = 'rotateY(0deg)';
     }
 }
