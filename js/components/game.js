@@ -21,9 +21,11 @@ export default class Game {
         this.wordCardsImage = document.querySelector('.word-cards_image');
         this.wordCardsRepeat = document.querySelectorAll('.word-cards_repeat');
         this.wordCardNameTranslate = document.querySelectorAll('.word-cards_name_translate');
+        this.wordCardStartBtn = document.querySelector('.word-cards_play');
 
         this.navMenuItem = document.querySelectorAll('.nav-link');
-        // this.wordCardsWrapper.remove();
+        this.wordCardsWrapper.remove();
+        this.wordCardStartBtn.remove();
     }
 
     createEvent = () => {
@@ -46,6 +48,31 @@ export default class Game {
 
         this.shuffleWordCards();
         this.createWordCards(currentMainCardIndex);
+    }
+
+    createNavMenuLink = (event) => {
+        const targetNav = event.target;
+        if (document.querySelector('.active')) {
+            document.querySelector('.active').classList.remove('active');
+        }
+
+        if (targetNav.getAttribute('href').slice(1) === 'Main Page') {
+            this.wordCardsWrapper.remove();
+            this.mainWarp.appendChild(this.mainCardsWrapper);
+            targetNav.classList.add('active');
+            return;
+        }
+
+        let currentNavMenuIndex = 0;
+        this.mainCardsState.forEach((item, index) => {
+            if (targetNav.getAttribute('href').slice(1) === item) {
+                currentNavMenuIndex = index;
+                targetNav.classList.add('active');
+            }
+        });
+
+        this.shuffleWordCards();
+        this.createWordCards(currentNavMenuIndex);
     }
 
     createWordCards = (currentMainCardIndex) => {
