@@ -26,6 +26,9 @@ export default class Game {
         this.navMenuItem = document.querySelectorAll('.nav-link');
         this.wordCardsWrapper.remove();
         this.wordCardStartBtn.remove();
+
+        this.switchTumbler = document.querySelector('.switch-slider');
+        this.switchType = document.querySelector('.switch-name');
     }
 
     createEvent = () => {
@@ -34,6 +37,23 @@ export default class Game {
         this.wordCardsRepeat.forEach((element) => element.addEventListener('click', (event) => this.createRotateBtn(event)));
         this.wordCardsContent.forEach((element) => element.addEventListener('mouseleave', (event) => this.createFlipWordCard(event)));
         this.navMenuItem.forEach((element) => element.addEventListener('click', (event) => this.createNavMenuLink(event)));
+        this.switchTumbler.addEventListener('click', (event) => this.createSwitch(event));
+    }
+
+    createSwitch = () => {
+        if (!this.isGameMode) {
+            this.switchType.innerHTML = 'PLAY';
+            this.mainCardsLink.forEach((element) => {
+                element.style = 'background-color: lightblue';
+            });
+            this.isGameMode = true;
+        } else {
+            this.switchType.innerHTML = 'TRAIN';
+            this.mainCardsLink.forEach((element) => {
+                element.style = 'background-color: white';
+            });
+            this.isGameMode = false;
+        }
     }
 
     filterLink = (event) => {

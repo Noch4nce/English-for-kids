@@ -121,20 +121,25 @@ body {
     padding: 2rem;
 }
 
-.switch {
+.switch-name {
+    padding-right: 1rem;
+    font-size: 2rem;
+}
+
+.switch-tumbler {
     position: relative;
     display: inline-block;
     width: 6rem;
     height: 3.4rem;
 }
 
-.switch input {
+.switch-tumbler input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+.switch-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -145,7 +150,7 @@ body {
     transition: .4s;
 }
 
-.slider:before {
+.switch-slider:before {
     position: absolute;
     content: "";
     height: 26px;
@@ -156,30 +161,25 @@ body {
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked + .switch-slider {
     background-color: blue;
 }
 
-input:focus + .slider {
+input:focus + .switch-slider {
     box-shadow: 0 0 0 4px rgba(21, 156, 228, 0.7);
     outline: none;
 }
 
-input:checked + .slider:before {
+input:checked + .switch-slider:before {
     transform: translateX(26px);
 }
 
-.slider.round {
+.switch-slider.round {
     border-radius: 34px;
 }
 
-.slider.round:before {
+.switch-slider.round:before {
     border-radius: 50%;
-}
-
-.switcher {
-    padding-right: 1rem;
-    font-size: 2rem;
 }
 
 .title {
