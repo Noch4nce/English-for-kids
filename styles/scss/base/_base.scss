@@ -243,7 +243,6 @@ input:checked + .switch-slider:before {
 
 .word-cards_content {
     max-width: 30rem;
-    background-color: white;
     -webkit-transition: -webkit-transform 0.7s;
     transition: transform 0.8s;
     -webkit-transform-style: preserve-3d;
@@ -260,12 +259,13 @@ input:checked + .switch-slider:before {
 .word-cards_image {
     width: 100%;
     max-width: 32rem;
-    padding-bottom: 3rem;
 }
 
 .word-cards_info {
     display: flex;
     justify-content: center;
+    background-color: white;
+    padding-top: 2rem;
 }
 
 .word-cards_name {

@@ -22,13 +22,15 @@ export default class Game {
         this.wordCardsRepeat = document.querySelectorAll('.word-cards_repeat');
         this.wordCardNameTranslate = document.querySelectorAll('.word-cards_name_translate');
         this.wordCardStartBtn = document.querySelector('.word-cards_play');
+        this.wordCardsInfo = document.querySelectorAll('.word-cards_info');
 
         this.navMenuItem = document.querySelectorAll('.nav-link');
         this.wordCardsWrapper.remove();
-        this.wordCardStartBtn.remove();
 
         this.switchTumbler = document.querySelector('.switch-slider');
         this.switchType = document.querySelector('.switch-name');
+
+        this.wordCardStartBtn.style.display = 'none';
     }
 
     createEvent = () => {
@@ -46,12 +48,30 @@ export default class Game {
             this.mainCardsLink.forEach((element) => {
                 element.style = 'background-color: lightblue';
             });
+
+            this.wordCardsInfo.forEach((element) => {
+                element.style.display = 'none';
+            });
+
+            this.wordCardStartBtn.style.display = 'block';
+
             this.isGameMode = true;
-        } else {
+
+            return;
+        }
+
+        if (this.isGameMode) {
             this.switchType.innerHTML = 'TRAIN';
             this.mainCardsLink.forEach((element) => {
                 element.style = 'background-color: white';
             });
+
+            this.wordCardsInfo.forEach((element) => {
+                element.style.display = 'flex';
+            });
+
+            this.wordCardStartBtn.style.display = 'none';
+
             this.isGameMode = false;
         }
     }
@@ -112,11 +132,13 @@ export default class Game {
     }
 
     wordCardPlay = (event) => {
-        const targetWordCard = event.target.closest('.word-cards_image');
-        if (targetWordCard === null) return;
-        const atr = targetWordCard.getAttribute('src').slice(17, -4);
+        if (!this.isGameMode) {
+            const targetWordCard = event.target.closest('.word-cards_image');
+            if (targetWordCard === null) return;
+            const atr = targetWordCard.getAttribute('src').slice(17, -4);
 
-        new Audio(`../assets/audio/${atr}.mp3`).play();
+            new Audio(`../assets/audio/${atr}.mp3`).play();
+        }
     }
 
     createRotateBtn = (event) => {
