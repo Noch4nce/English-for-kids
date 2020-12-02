@@ -4,6 +4,7 @@ export default class Game {
         this.wordCards = wordCards;
         this.createSelector();
         this.createEvent();
+        this.cardsAudio = new Audio();
         this.mainCardsState = ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', 'Fruits', 'Sport'];
     }
 
@@ -21,8 +22,10 @@ export default class Game {
         this.wordCardsImage = document.querySelector('.word-cards_image');
         this.wordCardsRepeat = document.querySelectorAll('.word-cards_repeat');
         this.wordCardNameTranslate = document.querySelectorAll('.word-cards_name_translate');
-        this.wordCardStartBtn = document.querySelector('.word-cards_play');
+        this.wordCardStartBtn = document.querySelector('.word-cards_play-name');
+        this.wordCardsStatBtnContainer = document.querySelector('.word-cards_play');
         this.wordCardsInfo = document.querySelectorAll('.word-cards_info');
+        this.wordRepeat = document.querySelector('.word_repeat');
 
         this.navMenuItem = document.querySelectorAll('.nav-link');
         this.wordCardsWrapper.remove();
@@ -40,6 +43,8 @@ export default class Game {
         this.wordCardsContent.forEach((element) => element.addEventListener('mouseleave', (event) => this.createFlipWordCard(event)));
         this.navMenuItem.forEach((element) => element.addEventListener('click', (event) => this.createNavMenuLink(event)));
         this.switchTumbler.addEventListener('click', (event) => this.createSwitch(event));
+        this.wordCardStartBtn.addEventListener('click', () => this.createStartGame());
+        this.wordRepeat.addEventListener(('click'), () => this.createWordRepeat());
     }
 
     createSwitch = () => {
@@ -54,6 +59,7 @@ export default class Game {
             });
 
             this.wordCardStartBtn.style.display = 'block';
+            this.wordRepeat.style.display = 'none';
 
             this.isGameMode = true;
 
@@ -71,6 +77,7 @@ export default class Game {
             });
 
             this.wordCardStartBtn.style.display = 'none';
+            this.wordRepeat.style.display = 'none';
 
             this.isGameMode = false;
         }
@@ -79,15 +86,15 @@ export default class Game {
     filterLink = (event) => {
         const targetPage = event.target.closest('.main-cards_link');
 
-        let currentMainCardIndex = 0;
+        this.currentMainCardIndex = 0;
         this.mainCardsState.forEach((item, index) => {
             if (targetPage.getAttribute('href').slice(1) === item) {
-                currentMainCardIndex = index;
+                this.currentMainCardIndex = index;
             }
         });
 
         this.shuffleWordCards();
-        this.createWordCards(currentMainCardIndex);
+        this.createWordCards(this.currentMainCardIndex);
     }
 
     createNavMenuLink = (event) => {
@@ -100,19 +107,27 @@ export default class Game {
             this.wordCardsWrapper.remove();
             this.mainWarp.appendChild(this.mainCardsWrapper);
             targetNav.classList.add('active');
+            this.wordRepeat.style.display = 'none';
+            if (this.wordCards) {
+                this.wordCardStartBtn.style.display = 'block';
+            }
             return;
         }
 
-        let currentNavMenuIndex = 0;
+        this.currentMainCardIndex = 0;
         this.mainCardsState.forEach((item, index) => {
             if (targetNav.getAttribute('href').slice(1) === item) {
-                currentNavMenuIndex = index;
+                this.currentMainCardIndex = index;
                 targetNav.classList.add('active');
             }
         });
 
+        if (this.wordCards) {
+            this.wordCardStartBtn.style.display = 'block';
+        }
+        this.wordRepeat.style.display = 'none';
         this.shuffleWordCards();
-        this.createWordCards(currentNavMenuIndex);
+        this.createWordCards(this.currentMainCardIndex);
     }
 
     createWordCards = (currentMainCardIndex) => {
@@ -137,7 +152,8 @@ export default class Game {
             if (targetWordCard === null) return;
             const atr = targetWordCard.getAttribute('src').slice(17, -4);
 
-            new Audio(`../assets/audio/${atr}.mp3`).play();
+            this.cardsAudio.src = `../../assets/audio/${atr}.mp3`;
+            this.cardsAudio.play();
         }
     }
 
@@ -160,5 +176,24 @@ export default class Game {
         this.reverseWordCard.querySelector('.word-cards_name_translate').style = 'transform: rotateY( 180deg )';
         this.reverseWordCard.querySelector('.word-cards_repeat').style.display = 'block';
         this.rotateWordCard.style.transform = 'rotateY(0deg)';
+    }
+
+    createStartGame = () => {
+        this.wordCardStartBtn.style.display = 'none';
+        this.wordRepeat.style.display = 'block';
+
+        this.cardsStartSound();
+    }
+
+    cardsStartSound = () => {
+        const wordFormat = this.cardData.length;
+        const wordMix = Math.floor(Math.random() * wordFormat);
+
+        this.cardsAudio.src = `${this.cardData[this.currentMainCardIndex][wordMix].audioSrc}`;
+        this.cardsAudio.play();
+    }
+
+    createWordRepeat = () => {
+        this.cardsAudio.play();
     }
 }

@@ -284,9 +284,14 @@ input:checked + .switch-slider:before {
     margin: 0 auto;
     max-width: 40rem;
     text-align: center;
-    background-color: rgb(123, 152, 240);
 }
 
 .word-cards_play-name {
     font-size: 3rem;
+    background-color: rgb(123, 152, 240);
+}
+
+.word_repeat {
+    margin: 0 auto;
+    display: none;
 }
