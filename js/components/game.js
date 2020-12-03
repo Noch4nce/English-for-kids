@@ -1,6 +1,7 @@
 export default class Game {
     constructor(wordCards) {
         this.isGameMode = false;
+        this.isResult = false;
         this.wordCards = wordCards;
         this.createSelector();
         this.createEvent();
@@ -19,13 +20,14 @@ export default class Game {
         this.wordCardsWrapper = document.querySelector('.word-cards_wrapper');
         this.wordCardsList = document.querySelectorAll('.word-cards_list');
         this.wordCardsContent = document.querySelectorAll('.word-cards_content');
-        this.wordCardsImage = document.querySelector('.word-cards_image');
+        this.wordCardsImage = document.querySelectorAll('.word-cards_image');
         this.wordCardsRepeat = document.querySelectorAll('.word-cards_repeat');
         this.wordCardNameTranslate = document.querySelectorAll('.word-cards_name_translate');
         this.wordCardStartBtn = document.querySelector('.word-cards_play-name');
         this.wordCardsStatBtnContainer = document.querySelector('.word-cards_play');
         this.wordCardsInfo = document.querySelectorAll('.word-cards_info');
         this.wordRepeat = document.querySelector('.word_repeat');
+        this.wordCardsResult = document.querySelector('.word-cards_result');
 
         this.navMenuItem = document.querySelectorAll('.nav-link');
         this.wordCardsWrapper.remove();
@@ -45,6 +47,7 @@ export default class Game {
         this.switchTumbler.addEventListener('click', (event) => this.createSwitch(event));
         this.wordCardStartBtn.addEventListener('click', () => this.createStartGame());
         this.wordRepeat.addEventListener(('click'), () => this.createWordRepeat());
+        this.wordCardsImage.forEach((element) => element.addEventListener('click', (event) => this.createPlayGame(event)));
     }
 
     createSwitch = () => {
@@ -80,7 +83,15 @@ export default class Game {
             this.wordRepeat.style.display = 'none';
 
             this.isGameMode = false;
+            this.isResult = false;
         }
+
+        document.querySelectorAll('.word-cards_wrong').forEach((element) => {
+            element.remove();
+        });
+        document.querySelectorAll('.word-cards_correct').forEach((element) => {
+            element.remove();
+        });
     }
 
     filterLink = (event) => {
@@ -108,9 +119,20 @@ export default class Game {
             this.mainWarp.appendChild(this.mainCardsWrapper);
             targetNav.classList.add('active');
             this.wordRepeat.style.display = 'none';
-            if (this.wordCards) {
+            document.querySelectorAll('.word-cards_wrong').forEach((element) => {
+                element.remove();
+            });
+            document.querySelectorAll('.word-cards_correct').forEach((element) => {
+                element.remove();
+            });
+
+            if (this.isGameMode) {
                 this.wordCardStartBtn.style.display = 'block';
+            } else {
+                this.wordCardStartBtn.style.display = 'none';
             }
+            this.isResult = false;
+
             return;
         }
 
@@ -122,9 +144,20 @@ export default class Game {
             }
         });
 
-        if (this.wordCards) {
+        if (this.isGameMode) {
             this.wordCardStartBtn.style.display = 'block';
+        } else {
+            this.wordCardStartBtn.style.display = 'none';
         }
+
+        document.querySelectorAll('.word-cards_wrong').forEach((element) => {
+            element.remove();
+        });
+        document.querySelectorAll('.word-cards_correct').forEach((element) => {
+            element.remove();
+        });
+
+        this.isResult = false;
         this.wordRepeat.style.display = 'none';
         this.shuffleWordCards();
         this.createWordCards(this.currentMainCardIndex);
@@ -181,19 +214,57 @@ export default class Game {
     createStartGame = () => {
         this.wordCardStartBtn.style.display = 'none';
         this.wordRepeat.style.display = 'block';
+        this.isResult = true;
+
+        const wordFormat = this.cardData.length;
+
+        this.generateRndSound = [];
+        this.index = 0;
+        while (this.generateRndSound.length < wordFormat) {
+            const rndNumber = Math.floor(Math.random() * wordFormat - 1) + 1;
+            if (this.generateRndSound.indexOf(rndNumber) === -1) {
+                this.generateRndSound.push(rndNumber);
+            }
+        }
 
         this.cardsStartSound();
     }
 
     cardsStartSound = () => {
-        const wordFormat = this.cardData.length;
-        const wordMix = Math.floor(Math.random() * wordFormat);
+        const currentSound = this.generateRndSound;
 
-        this.cardsAudio.src = `${this.cardData[this.currentMainCardIndex][wordMix].audioSrc}`;
+        if (this.index < this.cardData.length) {
+            this.index += 1;
+        }
+
+        this.cardsAudio.src = `${this.cardData[this.currentMainCardIndex][currentSound[this.index]].audioSrc}`;
         this.cardsAudio.play();
     }
 
     createWordRepeat = () => {
         this.cardsAudio.play();
+    }
+
+    createPlayGame = (event) => {
+        if (this.isResult) {
+            const correctResult = document.createElement('div');
+            const wrongResult = document.createElement('div');
+            correctResult.classList.add('word-cards_correct');
+            wrongResult.classList.add('word-cards_wrong');
+            correctResult.style.backgroundImage = 'url(\'../assets/images/star-win.svg\')';
+            wrongResult.style.backgroundImage = 'url(\'../assets/images/star.svg\')';
+
+            const currentImage = event.target.getAttribute('src').slice(17, -4);
+            const currentAudio = this.cardsAudio.src.slice(35, -4);
+
+            if (currentImage === currentAudio) {
+                this.wordCardsResult.appendChild(correctResult);
+                new Audio('assets/audio/correct.mp3').play();
+                this.cardsStartSound(this.num);
+            } else {
+                this.wordCardsResult.appendChild(wrongResult);
+                new Audio('assets/audio/error.mp3').play();
+            }
+        }
     }
 }

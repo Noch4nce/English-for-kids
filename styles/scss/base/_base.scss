@@ -295,3 +295,23 @@ input:checked + .switch-slider:before {
     margin: 0 auto;
     display: none;
 }
+
+.word-cards_result {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+.word-cards_correct {
+    min-width: 4rem;
+    height: 4rem;
+    background-size: 4rem 4rem;
+}
+
+.word-cards_wrong {
+    min-width: 4rem;
+    height: 4rem;
+    background-size: 4rem 4rem;
+}
