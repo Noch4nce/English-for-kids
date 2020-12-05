@@ -88,7 +88,7 @@ const cards = [
         },
         {
             word: 'skip',
-            translation: 'пропускать, прыгать',
+            translation: 'пропускать',
             image: '../assets/images/skip.jpg',
             audioSrc: '../assets/audio/skip.mp3',
         },

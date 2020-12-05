@@ -18,7 +18,6 @@ export default class Game {
         this.mainCardsLink = document.querySelectorAll('.main-cards_link');
 
         this.cardData = this.wordCards.cardData;
-        console.log(this.cardData);
         this.wordCardsWrapper = document.querySelector('.word-cards_wrapper');
         this.wordCardsList = document.querySelectorAll('.word-cards_list');
         this.wordCardsContent = document.querySelectorAll('.word-cards_content');
@@ -56,11 +55,13 @@ export default class Game {
         if (!this.isGameMode) {
             this.switchType.innerHTML = 'PLAY';
             this.mainCardsLink.forEach((element) => {
-                element.style = 'background-color: lightblue';
+                const el = element;
+                el.style = 'background-color: lightblue';
             });
 
             this.wordCardsInfo.forEach((element) => {
-                element.style.display = 'none';
+                const el = element;
+                el.style.display = 'none';
             });
 
             this.wordCardStartBtn.style.display = 'block';
@@ -74,11 +75,13 @@ export default class Game {
         if (this.isGameMode) {
             this.switchType.innerHTML = 'TRAIN';
             this.mainCardsLink.forEach((element) => {
-                element.style = 'background-color: white';
+                const el = element;
+                el.style = 'background-color: white';
             });
 
             this.wordCardsInfo.forEach((element) => {
-                element.style.display = 'flex';
+                const el = element;
+                el.style.display = 'flex';
             });
 
             this.wordCardStartBtn.style.display = 'none';
@@ -171,9 +174,10 @@ export default class Game {
         this.mainWarp.appendChild(this.wordCardsWrapper);
 
         this.wordCardsList.forEach((element, index) => {
-            element.querySelector('.word-cards_image').src = `${this.cardData[currentMainCardIndex][index].image}`;
-            element.querySelector('.word-cards_name').innerText = `${this.cardData[currentMainCardIndex][index].word}`;
-            element.querySelector('.word-cards_name_translate').innerText = `${this.cardData[currentMainCardIndex][index].translation}`;
+            const el = element;
+            el.querySelector('.word-cards_image').src = `${this.cardData[currentMainCardIndex][index].image}`;
+            el.querySelector('.word-cards_name').innerText = `${this.cardData[currentMainCardIndex][index].word}`;
+            el.querySelector('.word-cards_name_translate').innerText = `${this.cardData[currentMainCardIndex][index].translation}`;
         });
     }
 
@@ -187,16 +191,12 @@ export default class Game {
             if (targetWordCard === null) return;
             const atr = targetWordCard.getAttribute('src').slice(17, -4);
 
-            this.cardsAudio.src = `../../assets/audio/${atr}.mp3`;
+            this.cardsAudio.src = `../assets/audio/${atr}.mp3`;
             this.cardsAudio.play();
         }
     }
 
     createRotateBtn = (event) => {
-        // this.wordCardNameTranslate.style = 'transform: rotateY( 0deg )';
-        // this.wordCardNameTranslate.forEach((el) => {
-        //     el.style = 'transform: rotateY( 0deg )';
-        // });
         this.rotateWordCard = event.target.closest('.word-cards_content');
         this.rotateWordCard.querySelector('.word-cards_name').style = 'transform: rotateY( 180deg )';
         this.rotateWordCard.querySelector('.word-cards_name_translate').style = 'transform: rotateY( 360deg )';
@@ -255,19 +255,19 @@ export default class Game {
             correctResult.style.backgroundImage = 'url(\'../assets/images/star-win.svg\')';
             wrongResult.style.backgroundImage = 'url(\'../assets/images/star.svg\')';
             const currentImage = event.target.getAttribute('src').slice(17, -4);
-            const currentAudio = this.cardsAudio.src.slice(35, -4);
+            const currentAudio = this.cardsAudio.src.slice(this.cardsAudio.src.indexOf('audio') + 6, -4);
 
             if (currentImage === currentAudio || currentAudio === 'failure' || currentAudio === 'success') {
                 if (document.querySelectorAll('.word-cards_correct').length === 7) {
                     this.createFinishGame();
                 } else {
                     this.wordCardsResult.appendChild(correctResult);
-                    new Audio('assets/audio/correct.mp3').play();
+                    new Audio('../assets/audio/correct.mp3').play();
                     setTimeout(this.cardsStartSound, 1000);
                 }
             } else if (currentImage !== currentAudio) {
                 this.wordCardsResult.appendChild(wrongResult);
-                new Audio('assets/audio/error.mp3').play();
+                new Audio('../assets/audio/error.mp3').play();
                 this.countMistakes += 1;
             }
         }
@@ -283,11 +283,11 @@ export default class Game {
             this.main.appendChild(mistakes).classList.add('mistakes');
             mistakes.innerText = `Mistakes: ${this.countMistakes}`;
             this.main.appendChild(wrong).classList.add('finish_wrong');
-            this.cardsAudio.src = '../../assets/audio/failure.mp3';
+            this.cardsAudio.src = '../assets/audio/failure.mp3';
             this.cardsAudio.play();
         } else {
             this.main.appendChild(correct).classList.add('finish_correct');
-            this.cardsAudio.src = '../../assets/audio/success.mp3';
+            this.cardsAudio.src = '../assets/audio/success.mp3';
             this.cardsAudio.play();
         }
 

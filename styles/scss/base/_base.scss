@@ -165,11 +165,6 @@ input:checked + .switch-slider {
     background-color: blue;
 }
 
-input:focus + .switch-slider {
-    box-shadow: 0 0 0 4px rgba(21, 156, 228, 0.7);
-    outline: none;
-}
-
 input:checked + .switch-slider:before {
     transform: translateX(26px);
 }
