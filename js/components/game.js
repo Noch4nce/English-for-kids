@@ -6,11 +6,13 @@ export default class Game {
         this.createSelector();
         this.createEvent();
         this.cardsAudio = new Audio();
+        this.countMistakes = 0;
         this.mainCardsState = ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', 'Fruits', 'Sport'];
     }
 
     createSelector = () => {
         this.mainWarp = document.querySelector('.cards_warp');
+        this.main = document.querySelector('.main');
 
         this.mainCardsWrapper = document.querySelector('.main-cards_wrapper');
         this.mainCardsLink = document.querySelectorAll('.main-cards_link');
@@ -232,12 +234,11 @@ export default class Game {
 
     cardsStartSound = () => {
         const currentSound = this.generateRndSound;
-
         if (this.index < this.cardData.length) {
             this.index += 1;
         }
 
-        this.cardsAudio.src = `${this.cardData[this.currentMainCardIndex][currentSound[this.index]].audioSrc}`;
+        this.cardsAudio.src = `${this.cardData[this.currentMainCardIndex][currentSound[this.index - 1]].audioSrc}`;
         this.cardsAudio.play();
     }
 
@@ -253,18 +254,62 @@ export default class Game {
             wrongResult.classList.add('word-cards_wrong');
             correctResult.style.backgroundImage = 'url(\'../assets/images/star-win.svg\')';
             wrongResult.style.backgroundImage = 'url(\'../assets/images/star.svg\')';
-
             const currentImage = event.target.getAttribute('src').slice(17, -4);
             const currentAudio = this.cardsAudio.src.slice(35, -4);
 
-            if (currentImage === currentAudio) {
-                this.wordCardsResult.appendChild(correctResult);
-                new Audio('assets/audio/correct.mp3').play();
-                this.cardsStartSound(this.num);
-            } else {
+            if (currentImage === currentAudio || currentAudio === 'failure' || currentAudio === 'success') {
+                if (document.querySelectorAll('.word-cards_correct').length === 7) {
+                    this.createFinishGame();
+                } else {
+                    this.wordCardsResult.appendChild(correctResult);
+                    new Audio('assets/audio/correct.mp3').play();
+                    setTimeout(this.cardsStartSound, 1000);
+                }
+            } else if (currentImage !== currentAudio) {
                 this.wordCardsResult.appendChild(wrongResult);
                 new Audio('assets/audio/error.mp3').play();
+                this.countMistakes += 1;
             }
         }
+    }
+
+    createFinishGame = () => {
+        this.mainWarp.style.display = 'none';
+        const mistakes = document.createElement('h2');
+        const correct = document.createElement('img');
+        const wrong = document.createElement('img');
+
+        if (document.querySelectorAll('.word-cards_wrong').length > 0) {
+            this.main.appendChild(mistakes).classList.add('mistakes');
+            mistakes.innerText = `Mistakes: ${this.countMistakes}`;
+            this.main.appendChild(wrong).classList.add('finish_wrong');
+            this.cardsAudio.src = '../../assets/audio/failure.mp3';
+            this.cardsAudio.play();
+        } else {
+            this.main.appendChild(correct).classList.add('finish_correct');
+            this.cardsAudio.src = '../../assets/audio/success.mp3';
+            this.cardsAudio.play();
+        }
+
+        setTimeout(() => {
+            this.mainWarp.style.display = 'block';
+            this.wordCardStartBtn.style.display = 'block';
+            this.wordRepeat.style.display = 'none';
+            this.wordCardsWrapper.remove();
+            this.mainWarp.appendChild(this.mainCardsWrapper);
+            this.isResult = false;
+            this.countMistakes = 0;
+
+            document.querySelectorAll('.word-cards_wrong').forEach((element) => {
+                element.remove();
+            });
+            document.querySelectorAll('.word-cards_correct').forEach((element) => {
+                element.remove();
+            });
+
+            mistakes.remove();
+            wrong.remove();
+            correct.remove();
+        }, 3000);
     }
 }

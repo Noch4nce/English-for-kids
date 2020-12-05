@@ -315,3 +315,27 @@ input:checked + .switch-slider:before {
     height: 4rem;
     background-size: 4rem 4rem;
 }
+
+.finish_correct {
+    min-width: 60rem;
+    height: 50rem;
+    margin: 0 auto;
+    display: flex;
+    background-image: url(../../assets/images/success.jpg);
+    background-size: 60rem 50rem;
+}
+
+.finish_wrong {
+    min-width: 60rem;
+    height: 50rem;
+    margin: 0 auto;
+    display: flex;
+    background-image: url(../../assets/images/failure.jpg);
+    background-size: 60rem 50rem;
+}
+
+.mistakes {
+    font-size: 7rem;
+    color: red;
+    text-align: center;
+}
