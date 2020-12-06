@@ -56,7 +56,7 @@ export default class Game {
             this.switchType.innerHTML = 'PLAY';
             this.mainCardsLink.forEach((element) => {
                 const el = element;
-                el.style = 'background-color: lightblue';
+                el.style = 'background-image: linear-gradient(45deg, #FA8BFF 0%, #2BD2FF 52%, #2BFF88 90%);';
             });
 
             this.wordCardsInfo.forEach((element) => {
@@ -76,7 +76,7 @@ export default class Game {
             this.switchType.innerHTML = 'TRAIN';
             this.mainCardsLink.forEach((element) => {
                 const el = element;
-                el.style = 'background-color: white';
+                el.style = 'background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%)';
             });
 
             this.wordCardsInfo.forEach((element) => {
@@ -97,6 +97,13 @@ export default class Game {
         document.querySelectorAll('.word-cards_correct').forEach((element) => {
             element.remove();
         });
+        this.wordCardsImage.forEach((element) => {
+            const el = element;
+            el.style = 'pointer-events: auto';
+            el.style.opacity = '1';
+        });
+
+        this.countMistakes = 0;
     }
 
     filterLink = (event) => {
@@ -124,11 +131,17 @@ export default class Game {
             this.mainWarp.appendChild(this.mainCardsWrapper);
             targetNav.classList.add('active');
             this.wordRepeat.style.display = 'none';
+            this.countMistakes = 0;
             document.querySelectorAll('.word-cards_wrong').forEach((element) => {
                 element.remove();
             });
             document.querySelectorAll('.word-cards_correct').forEach((element) => {
                 element.remove();
+            });
+            this.wordCardsImage.forEach((element) => {
+                const el = element;
+                el.style = 'pointer-events: auto';
+                el.style.opacity = '1';
             });
 
             if (this.isGameMode) {
@@ -161,7 +174,13 @@ export default class Game {
         document.querySelectorAll('.word-cards_correct').forEach((element) => {
             element.remove();
         });
+        this.wordCardsImage.forEach((element) => {
+            const el = element;
+            el.style = 'pointer-events: auto';
+            el.style.opacity = '1';
+        });
 
+        this.countMistakes = 0;
         this.isResult = false;
         this.wordRepeat.style.display = 'none';
         this.shuffleWordCards();
@@ -250,6 +269,7 @@ export default class Game {
         if (this.isResult) {
             const correctResult = document.createElement('div');
             const wrongResult = document.createElement('div');
+            const targetImage = event.target;
             correctResult.classList.add('word-cards_correct');
             wrongResult.classList.add('word-cards_wrong');
             correctResult.style.backgroundImage = 'url(\'../assets/images/star-win.svg\')';
@@ -263,6 +283,8 @@ export default class Game {
                 } else {
                     this.wordCardsResult.appendChild(correctResult);
                     new Audio('../assets/audio/correct.mp3').play();
+                    targetImage.style = 'pointer-events: none';
+                    targetImage.style.opacity = '0.3';
                     setTimeout(this.cardsStartSound, 1000);
                 }
             } else if (currentImage !== currentAudio) {
@@ -305,6 +327,11 @@ export default class Game {
             });
             document.querySelectorAll('.word-cards_correct').forEach((element) => {
                 element.remove();
+            });
+            this.wordCardsImage.forEach((element) => {
+                const el = element;
+                el.style = 'pointer-events: auto';
+                el.style.opacity = '1';
             });
 
             mistakes.remove();
