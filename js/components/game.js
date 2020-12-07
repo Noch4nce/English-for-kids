@@ -5,7 +5,6 @@ export default class Game {
         this.wordCards = wordCards;
         this.createSelector();
         this.createEvent();
-        this.generateStats();
         this.cardsAudio = new Audio();
         this.countMistakes = 0;
         this.mainCardsState = ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', 'Fruits', 'Sport'];
@@ -38,7 +37,8 @@ export default class Game {
         this.switchType = document.querySelector('.switch-name');
 
         this.navStatsButton = document.querySelector('.nav-stats');
-        this.wordStatsContainer = document.querySelector('.wordStatsContainer');
+        this.wordStatsContainer = document.querySelector('.word-stats_container');
+        this.statsWrapper = document.querySelector('.statistics_wrapper');
 
         this.wordCardStartBtn.style.display = 'none';
     }
@@ -127,6 +127,8 @@ export default class Game {
 
     createNavMenuLink = (event) => {
         const targetNav = event.target;
+        this.mainWarp.classList.remove('main_hide');
+        this.statsWrapper.classList.remove('stats_active');
         if (document.querySelector('.active')) {
             document.querySelector('.active').classList.remove('active');
         }
@@ -137,6 +139,7 @@ export default class Game {
             targetNav.classList.add('active');
             this.wordRepeat.style.display = 'none';
             this.countMistakes = 0;
+
             document.querySelectorAll('.word-cards_wrong').forEach((element) => {
                 element.remove();
             });
@@ -217,6 +220,16 @@ export default class Game {
 
             this.cardsAudio.src = `../assets/audio/${atr}.mp3`;
             this.cardsAudio.play();
+
+            let currentTrainWord = 0;
+            for (let i = 0; i < this.cardData.length; i += 1) {
+                for (let k = 0; k < this.cardData[i].length; k += 1) {
+                    if (atr === this.cardData[i][k].word) {
+                        currentTrainWord = k;
+                    }
+                }
+            }
+            this.cardData[this.currentMainCardIndex][currentTrainWord].clicks += 1;
         }
     }
 
@@ -282,6 +295,15 @@ export default class Game {
             const currentImage = event.target.getAttribute('src').slice(17, -4);
             const currentAudio = this.cardsAudio.src.slice(this.cardsAudio.src.indexOf('audio') + 6, -4);
 
+            let findCurrentWord = 0;
+            for (let i = 0; i < this.cardData.length; i += 1) {
+                for (let k = 0; k < this.cardData[i].length; k += 1) {
+                    if (currentImage === this.cardData[i][k].word) {
+                        findCurrentWord = k;
+                    }
+                }
+            }
+
             if (currentImage === currentAudio || currentAudio === 'failure' || currentAudio === 'success') {
                 if (document.querySelectorAll('.word-cards_correct').length === 7) {
                     this.createFinishGame();
@@ -290,12 +312,14 @@ export default class Game {
                     new Audio('../assets/audio/correct.mp3').play();
                     targetImage.style = 'pointer-events: none';
                     targetImage.style.opacity = '0.3';
+                    this.cardData[this.currentMainCardIndex][findCurrentWord].correct += 1;
                     setTimeout(this.cardsStartSound, 1000);
                 }
             } else if (currentImage !== currentAudio) {
                 this.wordCardsResult.appendChild(wrongResult);
                 new Audio('../assets/audio/error.mp3').play();
                 this.countMistakes += 1;
+                this.cardData[this.currentMainCardIndex][findCurrentWord].wrong += 1;
             }
         }
     }
@@ -346,9 +370,10 @@ export default class Game {
     }
 
     generateStats = () => {
-        this.mainCardsState = ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', 'Fruits', 'Sport'];
-        this.mainWarp.style.display = 'none';
-        console.log(this.cardData[0])
+        this.statsWrapper.classList.toggle('stats_active');
+        this.mainWarp.classList.toggle('main_hide');
+        this.wordStatsContainer.innerHTML = '';
+
         for (let i = 0; i < this.cardData.length; i += 1) {
             for (let k = 0; k < this.cardData[i].length; k += 1) {
                 const cellTable = document.createElement('tr');
@@ -359,14 +384,21 @@ export default class Game {
                 const correct = document.createElement('td');
                 const mistakes = document.createElement('td');
                 const errors = document.createElement('td');
+                const countRight = this.cardData[i][k].correct;
+                const countError = this.cardData[i][k].wrong;
 
                 category.innerText = this.mainCardsState[i];
                 word.innerText = this.cardData[i][k].word;
                 translate.innerText = this.cardData[i][k].translation;
-                clicks.innerText = 0;
-                correct.innerText = 0;
-                mistakes.innerText = 0;
-                errors.innerText = 0;
+                clicks.innerText = this.cardData[i][k].clicks;
+                correct.innerText = countRight;
+                mistakes.innerText = countError;
+
+                if (countError > 0) {
+                    errors.innerText = ((countError / (countError + countRight)) * 100).toFixed(1);
+                } else {
+                    errors.innerText = 0;
+                }
 
                 cellTable.appendChild(category);
                 cellTable.appendChild(word);

@@ -26,3 +26,4 @@ ready(() => {
 
 navButton.addEventListener('click', () => navClick());
 overlay.addEventListener('click', () => navClick());
+document.querySelector('.nav-stats').addEventListener('click', () => navClick());
