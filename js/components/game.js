@@ -5,6 +5,7 @@ export default class Game {
         this.wordCards = wordCards;
         this.createSelector();
         this.createEvent();
+        this.generateStats();
         this.cardsAudio = new Audio();
         this.countMistakes = 0;
         this.mainCardsState = ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', 'Fruits', 'Sport'];
@@ -36,6 +37,9 @@ export default class Game {
         this.switchTumbler = document.querySelector('.switch-slider');
         this.switchType = document.querySelector('.switch-name');
 
+        this.navStatsButton = document.querySelector('.nav-stats');
+        this.wordStatsContainer = document.querySelector('.wordStatsContainer');
+
         this.wordCardStartBtn.style.display = 'none';
     }
 
@@ -49,6 +53,7 @@ export default class Game {
         this.wordCardStartBtn.addEventListener('click', () => this.createStartGame());
         this.wordRepeat.addEventListener(('click'), () => this.createWordRepeat());
         this.wordCardsImage.forEach((element) => element.addEventListener('click', (event) => this.createPlayGame(event)));
+        this.navStatsButton.addEventListener('click', (event) => this.generateStats(event));
     }
 
     createSwitch = () => {
@@ -338,5 +343,40 @@ export default class Game {
             wrong.remove();
             correct.remove();
         }, 3000);
+    }
+
+    generateStats = () => {
+        this.mainCardsState = ['Action (set A)', 'Action (set B)', 'Animal (set A)', 'Animal (set B)', 'Clothes', 'Emotions', 'Fruits', 'Sport'];
+        this.mainWarp.style.display = 'none';
+        console.log(this.cardData[0])
+        for (let i = 0; i < this.cardData.length; i += 1) {
+            for (let k = 0; k < this.cardData[i].length; k += 1) {
+                const cellTable = document.createElement('tr');
+                const category = document.createElement('td');
+                const word = document.createElement('td');
+                const translate = document.createElement('td');
+                const clicks = document.createElement('td');
+                const correct = document.createElement('td');
+                const mistakes = document.createElement('td');
+                const errors = document.createElement('td');
+
+                category.innerText = this.mainCardsState[i];
+                word.innerText = this.cardData[i][k].word;
+                translate.innerText = this.cardData[i][k].translation;
+                clicks.innerText = 0;
+                correct.innerText = 0;
+                mistakes.innerText = 0;
+                errors.innerText = 0;
+
+                cellTable.appendChild(category);
+                cellTable.appendChild(word);
+                cellTable.appendChild(translate);
+                cellTable.appendChild(clicks);
+                cellTable.appendChild(correct);
+                cellTable.appendChild(mistakes);
+                cellTable.appendChild(errors);
+                this.wordStatsContainer.appendChild(cellTable);
+            }
+        }
     }
 }
