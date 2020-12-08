@@ -3,6 +3,8 @@ export default class Game {
         this.isGameMode = false;
         this.isResult = false;
         this.wordCards = wordCards;
+        this.cardData = JSON.parse(localStorage.getItem('stats'));
+        this.isGetState = JSON.parse(localStorage.getItem('flag'));
         this.createSelector();
         this.createEvent();
         this.cardsAudio = new Audio();
@@ -17,7 +19,7 @@ export default class Game {
         this.mainCardsWrapper = document.querySelector('.main-cards_wrapper');
         this.mainCardsLink = document.querySelectorAll('.main-cards_link');
 
-        this.cardData = this.wordCards.cardData;
+        if (!this.isGetState) this.cardData = this.wordCards.cardData;
         this.wordCardsWrapper = document.querySelector('.word-cards_wrapper');
         this.wordCardsList = document.querySelectorAll('.word-cards_list');
         this.wordCardsContent = document.querySelectorAll('.word-cards_content');
@@ -410,5 +412,9 @@ export default class Game {
                 this.wordStatsContainer.appendChild(cellTable);
             }
         }
+
+        this.isGetState = true;
+        localStorage.setItem('stats', JSON.stringify(this.cardData));
+        localStorage.setItem('flag', JSON.stringify(this.isGetState));
     }
 }
