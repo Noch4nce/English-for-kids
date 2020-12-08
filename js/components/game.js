@@ -41,6 +41,8 @@ export default class Game {
         this.navStatsButton = document.querySelector('.nav-stats');
         this.wordStatsContainer = document.querySelector('.word-stats_container');
         this.statsWrapper = document.querySelector('.statistics_wrapper');
+        this.statsDifficultBtn = document.querySelector('.stats_difficult');
+        this.statsResetBtn = document.querySelector('.stats_reset');
 
         this.wordCardStartBtn.style.display = 'none';
     }
@@ -56,6 +58,8 @@ export default class Game {
         this.wordRepeat.addEventListener(('click'), () => this.createWordRepeat());
         this.wordCardsImage.forEach((element) => element.addEventListener('click', (event) => this.createPlayGame(event)));
         this.navStatsButton.addEventListener('click', (event) => this.generateStats(event));
+        this.statsDifficultBtn.addEventListener('click', () => this.createDifficultCards());
+        this.statsResetBtn.addEventListener('click', () => this.createResetStats());
     }
 
     createSwitch = () => {
@@ -168,6 +172,8 @@ export default class Game {
         this.mainCardsState.forEach((item, index) => {
             if (targetNav.getAttribute('href').slice(1) === item) {
                 this.currentMainCardIndex = index;
+                targetNav.classList.add('active');
+            } else {
                 targetNav.classList.add('active');
             }
         });
@@ -416,5 +422,22 @@ export default class Game {
         this.isGetState = true;
         localStorage.setItem('stats', JSON.stringify(this.cardData));
         localStorage.setItem('flag', JSON.stringify(this.isGetState));
+    }
+
+    createResetStats = () => {
+        const parseState = this.cardData.flat();
+        for (let i = 0; i < parseState.length; i += 1) {
+            parseState[i].clicks = 0;
+            parseState[i].correct = 0;
+            parseState[i].wrong = 0;
+        }
+        document.querySelector('.nav-stats').classList.remove('active');
+        this.generateStats();
+    }
+
+    createDifficultCards = () => {
+        this.statsWrapper.classList.toggle('stats_active');
+        this.mainWarp.classList.toggle('main_hide');
+        this.mainWarp.appendChild(this.wordCardsWrapper);
     }
 }

@@ -472,7 +472,7 @@ input:checked + .switch-slider:before {
 }
 
 .main_hide {
-    display: none;
+    display: none !important;
 }
 
 table {
@@ -605,4 +605,41 @@ tr td:nth-child(2) {
     font-style: italic;
     min-width: 6em;
     max-width: 90vw;
+}
+
+.stats-btn_container {
+    display: flex;
+}
+
+.stats_reset {
+    width: 10rem;
+    height: 6rem;
+    border: none;
+    background: aquamarine;
+    border-radius: 10%;
+    font-size: 1.5rem;
+    box-shadow: 3px 3px 10px 0 #062e8f4f;
+    font-size: 2rem;
+    font-weight: 600;
+
+    &:hover {
+        box-shadow: 0 6px 10px rgba(0,0,0,.2);
+    }
+}
+
+.stats_difficult {
+    width: 10rem;
+    height: 6rem;
+    margin-right: 1rem;
+    border: none;
+    background: aquamarine;
+    border-radius: 10%;
+    font-size: 1.5rem;
+    box-shadow: 3px 3px 10px 0 #062e8f4f;
+    font-size: 2rem;
+    font-weight: 600;
+
+    &:hover {
+        box-shadow: 0 6px 10px rgba(0,0,0,.2);
+    }
 }
