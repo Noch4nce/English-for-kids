@@ -18,13 +18,21 @@ body {
 }
 
 .wrapper {
+    margin: 0 auto;
+    min-width: 32rem;
+    max-width: 150rem;
     display: flex;
     justify-content: space-between;
     padding: 2rem;
 }
 
 .navbar {
-    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
 }
 
 .collapse {
@@ -36,7 +44,14 @@ body {
 .navbar-toggler {
     z-index: 1000;
     padding: .8rem .75rem;
-    border: 0.3rem solid black;
+    border: none;
+}
+
+button:active, button:focus {
+    outline: none;
+}
+button::-moz-focus-inner {
+    border: 0;
 }
 
 .navbar-collapse {
@@ -117,7 +132,7 @@ body {
 
 .navbar-light .navbar-nav .nav-link {
     font-weight: 600;
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: #4158D0;
 }
 
@@ -126,19 +141,23 @@ body {
 }
 
 .navbar-nav {
-    position: absolute;
-    top: -68px;
-    left: -32px;
+    display: flex;
+    position: fixed;
+    overflow: hidden;
+    overflow-y: auto;
+    top: 0;
+    left: 0px;
     z-index: 10;
-    transform: translateX(-320px);
-    width: 320px;
+    transform: translateX(-100%);
+    width: 19%;
     height: 100vh;
-    padding: 60px;
+    padding-top: 6%;
     background-color: aliceblue;
     transition: transform 0.5s ease-out;
+    min-width: 32rem;
 
-    @media (max-width: 700px) {
-        height: auto;
+    @media (max-width: 1600px) {
+        padding-top: 10rem;
     }
 }
 
@@ -147,9 +166,11 @@ body {
 }
 
 .nav-item {
-    width: 13rem;
-    margin: 20px 0px 0px 20px;
+    margin-left: 25%;
+    padding-bottom: 2rem;
 }
+
+
 
 .overlay {
     width: 0;
@@ -235,15 +256,18 @@ input:checked + .switch-slider:before {
 }
 
 .title {
+    margin: 0;
+    padding-bottom: 3rem;
+    text-align: center;
     font-size: 4rem;
-    margin-left: 11rem;
     color: #4158D0;
     font-variant: all-small-caps;
     font-weight: 600;
+}
 
-    @media (max-width: 700px) {
-        display: none;
-    }
+.title_link {
+    display: table;
+    margin: 0 auto;
 }
 
 .cards_warp {
@@ -341,6 +365,7 @@ input:checked + .switch-slider:before {
     text-decoration: none;
 
     &:hover {
+        cursor: pointer;
         box-shadow: 0 10px 20px rgba(0,0,0,.4);
         background-image: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%) !important;
     }
@@ -359,6 +384,7 @@ input:checked + .switch-slider:before {
     width: 85%;
     border-radius: 20%;
     box-shadow: 0 10px 20px rgba(0,0,0,.4);
+    cursor: pointer;
 }
 
 .word-cards_info {
@@ -378,8 +404,11 @@ input:checked + .switch-slider:before {
 .word-cards_repeat {
     height: 40px;
     width: 40px;
-
+    cursor: pointer;
     filter: drop-shadow(2px 4px 6px black);
+    &:hover {
+        filter: brightness(0.5);
+    }
 }
 
 .word-cards_play {

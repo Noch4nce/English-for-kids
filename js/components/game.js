@@ -2,6 +2,7 @@ export default class Game {
     constructor(wordCards) {
         this.isGameMode = false;
         this.isResult = false;
+        this.isStat = false;
         this.wordCards = wordCards;
         this.cardData = JSON.parse(localStorage.getItem('stats'));
         this.isGetState = JSON.parse(localStorage.getItem('flag'));
@@ -56,7 +57,7 @@ export default class Game {
         this.switchTumbler.addEventListener('click', (event) => this.createSwitch(event));
         this.wordCardStartBtn.addEventListener('click', () => this.createStartGame());
         this.wordRepeat.addEventListener(('click'), () => this.createWordRepeat());
-        this.wordCardsImage.forEach((element) => element.addEventListener('click', (event) => this.createPlayGame(event)));
+        this.wordCardsContent.forEach((element) => element.addEventListener('click', (event) => this.createPlayGame(event)));
         this.navStatsButton.addEventListener('click', (event) => this.generateStats(event));
         this.statsDifficultBtn.addEventListener('click', () => this.createDifficultCards());
         this.statsResetBtn.addEventListener('click', () => this.createResetStats());
@@ -108,7 +109,7 @@ export default class Game {
         document.querySelectorAll('.word-cards_correct').forEach((element) => {
             element.remove();
         });
-        this.wordCardsImage.forEach((element) => {
+        this.wordCardsContent.forEach((element) => {
             const el = element;
             el.style = 'pointer-events: auto';
             el.style.opacity = '1';
@@ -124,6 +125,14 @@ export default class Game {
         this.mainCardsState.forEach((item, index) => {
             if (targetPage.getAttribute('href').slice(1) === item) {
                 this.currentMainCardIndex = index;
+            }
+        });
+        document.querySelectorAll('.nav-link').forEach((el) => {
+            if (el.getAttribute('href').slice(1) === 'Main Page') {
+                el.classList.remove('active');
+            }
+            if (el.getAttribute('href').slice(1) === targetPage.getAttribute('href').slice(1)) {
+                el.classList.add('active');
             }
         });
 
@@ -152,7 +161,7 @@ export default class Game {
             document.querySelectorAll('.word-cards_correct').forEach((element) => {
                 element.remove();
             });
-            this.wordCardsImage.forEach((element) => {
+            this.wordCardsContent.forEach((element) => {
                 const el = element;
                 el.style = 'pointer-events: auto';
                 el.style.opacity = '1';
@@ -190,7 +199,7 @@ export default class Game {
         document.querySelectorAll('.word-cards_correct').forEach((element) => {
             element.remove();
         });
-        this.wordCardsImage.forEach((element) => {
+        this.wordCardsContent.forEach((element) => {
             const el = element;
             el.style = 'pointer-events: auto';
             el.style.opacity = '1';
@@ -222,10 +231,10 @@ export default class Game {
 
     wordCardPlay = (event) => {
         if (!this.isGameMode) {
-            const targetWordCard = event.target.closest('.word-cards_image');
+            const targetWordCard = event.target.closest('.word-cards_content');
             if (targetWordCard === null) return;
-            const atr = targetWordCard.getAttribute('src').slice(17, -4);
-
+            if (event.target === targetWordCard.querySelector('.word-cards_repeat')) return;
+            const atr = targetWordCard.querySelector('.word-cards_image').getAttribute('src').slice(17, -4);
             this.cardsAudio.src = `../assets/audio/${atr}.mp3`;
             this.cardsAudio.play();
 
@@ -293,14 +302,14 @@ export default class Game {
 
     createPlayGame = (event) => {
         if (this.isResult) {
+            const targetContent = event.target.closest('.word-cards_content');
             const correctResult = document.createElement('div');
             const wrongResult = document.createElement('div');
-            const targetImage = event.target;
             correctResult.classList.add('word-cards_correct');
             wrongResult.classList.add('word-cards_wrong');
             correctResult.style.backgroundImage = 'url(\'../assets/images/star-win.svg\')';
             wrongResult.style.backgroundImage = 'url(\'../assets/images/star.svg\')';
-            const currentImage = event.target.getAttribute('src').slice(17, -4);
+            const currentImage = targetContent.querySelector('.word-cards_image').getAttribute('src').slice(17, -4);
             const currentAudio = this.cardsAudio.src.slice(this.cardsAudio.src.indexOf('audio') + 6, -4);
 
             let findCurrentWord = 0;
@@ -318,8 +327,8 @@ export default class Game {
                 } else {
                     this.wordCardsResult.appendChild(correctResult);
                     new Audio('../assets/audio/correct.mp3').play();
-                    targetImage.style = 'pointer-events: none';
-                    targetImage.style.opacity = '0.3';
+                    targetContent.style = 'pointer-events: none';
+                    targetContent.style.opacity = '0.3';
                     this.cardData[this.currentMainCardIndex][findCurrentWord].correct += 1;
                     setTimeout(this.cardsStartSound, 1000);
                 }
@@ -365,7 +374,7 @@ export default class Game {
             document.querySelectorAll('.word-cards_correct').forEach((element) => {
                 element.remove();
             });
-            this.wordCardsImage.forEach((element) => {
+            this.wordCardsContent.forEach((element) => {
                 const el = element;
                 el.style = 'pointer-events: auto';
                 el.style.opacity = '1';
@@ -377,9 +386,9 @@ export default class Game {
         }, 3000);
     }
 
-    generateStats = () => {
-        this.statsWrapper.classList.toggle('stats_active');
-        this.mainWarp.classList.toggle('main_hide');
+    generateStats = (event) => {
+        if (event) this.statsWrapper.classList.toggle('stats_active');
+        if (event) this.mainWarp.classList.toggle('main_hide');
         this.wordStatsContainer.innerHTML = '';
 
         for (let i = 0; i < this.cardData.length; i += 1) {
@@ -431,7 +440,6 @@ export default class Game {
             parseState[i].correct = 0;
             parseState[i].wrong = 0;
         }
-        document.querySelector('.nav-stats').classList.remove('active');
         this.generateStats();
     }
 
