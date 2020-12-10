@@ -672,3 +672,25 @@ tr td:nth-child(2) {
         box-shadow: 0 6px 10px rgba(0,0,0,.2);
     }
 }
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 auto;
+    min-width: 32rem;
+    max-width: 120rem;
+}
+
+.rs_wrapper {
+    padding-right: 4rem;
+}
+
+.rs_logo {
+    width: 10rem;
+    margin-right: 3rem;
+}
+
+.github_logo {
+    width: 10rem;
+}
